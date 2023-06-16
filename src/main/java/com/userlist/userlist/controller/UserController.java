@@ -7,7 +7,9 @@ import com.userlist.userlist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import java.util.Set;
 
 @Controller
 public class UserController {
@@ -46,25 +48,30 @@ public class UserController {
     }
 
     @PostMapping("/{id}")
-    public String saveEditUser(@PathVariable Long id, @ModelAttribute("user") User user) {
-        System.out.println("##########################" + id);
-        Integer loginUser = 1;
+    public String saveEditUser(@PathVariable Long id, @ModelAttribute("user") User user,@RequestBody MultiValueMap<String, String> formData) {
         User existingUser = userService.getUserById(id);
+        System.out.println("//////////////////// " +formData.values());
         String editTxt = "Edit";
         String[] changedValue = {user.getFirstName(), user.getLastName(), user.getEmail()};
         String[] oriValue = {existingUser.getFirstName(), existingUser.getLastName(), existingUser.getEmail()};
-        String[] fieldName = {"First Name", "Last Name", "Email"};
+        Set<String> fieldName = formData.keySet();
 
-        String conditionedValue = "";
+        String conditionedValue = "{";
         String originalValue = "";
         String conditionedField = "";
         for (int i = 0; i < changedValue.length; i++) {
             if (!changedValue[i].equals(oriValue[i])) {
-                conditionedValue += changedValue[i] + ", ";
-                conditionedField += fieldName[i] + ", ";
+                conditionedValue += "\"field"+ i +"\":" +changedValue[i] + ",";
+                //conditionedField += fieldName + ", ";
                 originalValue += oriValue[i] + ", ";
             }
         }
+
+        for(var i : fieldName) {
+            System.out.println(i);
+        }
+        conditionedValue = conditionedValue.substring(0, conditionedValue.length()-1);
+        conditionedValue += "}";
         System.out.println("edited Id: "+ user.getId() +" Changed field ############ "+ conditionedField + "Changed Value From ########### " + originalValue);
         System.out.println("To This ########### " + conditionedValue);
 

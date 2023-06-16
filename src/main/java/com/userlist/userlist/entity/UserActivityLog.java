@@ -1,12 +1,18 @@
 package com.userlist.userlist.entity;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "userActivityLog")
+@EntityListeners(AuditingEntityListener.class)
 public class UserActivityLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,17 +25,17 @@ public class UserActivityLog {
     @ManyToOne
     @JoinColumn(name = "fk_user_id")
     private User user;
-    @CreatedDate
-    private Date changeTime;
+    @CreatedDate()
+    private LocalDateTime createdDate;
 
-    public UserActivityLog(String action, String changedField, String valueFrom, String valueTo, Long editedId, User user, Date changeTime) {
+    public UserActivityLog(String action, String changedField, String valueFrom, String valueTo, Long editedId, User user, LocalDateTime createdDate) {
         this.action = action;
         this.changedField = changedField;
         this.valueFrom = valueFrom;
         this.valueTo = valueTo;
         this.editedId = editedId;
         this.user = user;
-        this.changeTime = changeTime;
+        this.createdDate = createdDate;
     }
 
     public UserActivityLog() {
@@ -92,11 +98,11 @@ public class UserActivityLog {
         this.user = user;
     }
 
-    public Date getChangeTime() {
-        return changeTime;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public void setChangeTime(Date changeTime) {
-        this.changeTime = changeTime;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }
