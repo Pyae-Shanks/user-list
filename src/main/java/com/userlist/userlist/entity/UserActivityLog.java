@@ -8,7 +8,9 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "userActivityLog")
@@ -25,6 +27,10 @@ public class UserActivityLog {
     @ManyToOne
     @JoinColumn(name = "fk_user_id")
     private User user;
+
+    @OneToMany(mappedBy = "userActivityLog", cascade = CascadeType.ALL)
+    private List<ActivityLog> activityLogsByUserActivity = new ArrayList<>();
+
     @CreatedDate()
     private LocalDateTime createdDate;
 
