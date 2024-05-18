@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.userlist.userlist", "com.userlist.util"})
 @EnableJpaAuditing
 public class UserlistApplication implements CommandLineRunner {
 
@@ -23,7 +23,7 @@ public class UserlistApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		List<User> user = userRepository.findAllByDeletedUser(false);
-		System.out.println("000000000000000000000000000000000000000000000000 " + user);
+		System.out.println("==> " + user);
 	}
 
 }

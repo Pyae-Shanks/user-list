@@ -13,15 +13,17 @@ import java.util.Set;
 
 @Controller
 public class UserController {
-    private UserService userService;
-    @Autowired
-    private UserActivityLogService userActivityLogService;
+    private final UserService userService;
+
+    @Autowired private UserActivityLogService userActivityLogService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    //handler method to handle list users and return model and view
+    //
+    // handler method to handle list users and return model and view
+    //
     @GetMapping("/")
     public String listUsers(Model model) {
         model.addAttribute("users", userService.getAllUser());
@@ -50,30 +52,29 @@ public class UserController {
     @PostMapping("/{id}")
     public String saveEditUser(@PathVariable Long id, @ModelAttribute("user") User user,@RequestBody MultiValueMap<String, String> formData) {
         User existingUser = userService.getUserById(id);
-        System.out.println("//////////////////// " +formData.values());
         String editTxt = "Edit";
         String[] changedValue = {user.getFirstName(), user.getLastName(), user.getEmail()};
         String[] oriValue = {existingUser.getFirstName(), existingUser.getLastName(), existingUser.getEmail()};
         Set<String> fieldName = formData.keySet();
 
-        String conditionedValue = "{";
+
+        String conditionedValue = "";
         String originalValue = "";
         String conditionedField = "";
         for (int i = 0; i < changedValue.length; i++) {
             if (!changedValue[i].equals(oriValue[i])) {
-                conditionedValue += "\"field"+ i +"\":" +changedValue[i] + ",";
-                //conditionedField += fieldName + ", ";
+                //conditionedValue += "\"field"+ i +"\":" +changedValue[i] + ", ";
+                conditionedValue += changedValue[i] + ", ";
+                conditionedField += fieldName + ", ";
                 originalValue += oriValue[i] + ", ";
             }
         }
 
-        for(var i : fieldName) {
-            System.out.println(i);
-        }
-        conditionedValue = conditionedValue.substring(0, conditionedValue.length()-1);
-        conditionedValue += "}";
-        System.out.println("edited Id: "+ user.getId() +" Changed field ############ "+ conditionedField + "Changed Value From ########### " + originalValue);
-        System.out.println("To This ########### " + conditionedValue);
+        //conditionedValue = conditionedValue.substring(0, conditionedValue.length()-1);
+        //conditionedValue += "}";
+        System.out.println("edited Id: "+ user.getId() +"\nChanged field >>>>> "+ conditionedField);
+        System.out.println("Changed Value From This >>>>>> " + originalValue);
+        System.out.println("To This >>>>>> " + conditionedValue);
 
         // Saving data to User Activity Log
         UserActivityLog userActivityLog = new UserActivityLog();
